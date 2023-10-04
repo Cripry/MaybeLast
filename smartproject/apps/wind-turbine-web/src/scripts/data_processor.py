@@ -140,7 +140,7 @@ def process_uploaded_file(file_path):
         dbname="mydb",
         user="myuser",
         password="mypassword",
-        host="localhost",
+        host="db",
         port="5432"
     )
     cursor = connection.cursor()

@@ -12,9 +12,14 @@ CORS(app)
 
 load_dotenv()
 
+print("AIIIIICI" + os.getcwd())
+
 # Initialize your model
-pipeline = WindTurbinePipeline(model_weights_path=r'.\model\model.keras',
-                                scaler=r'.\scaler\scaler_filename.pkl')
+pipeline = WindTurbinePipeline(
+    model_weights_path='/app/model/model.keras',
+    scaler='/app/scaler/scaler_filename.pkl'
+)
+
 # Initialize DB connection
 DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)

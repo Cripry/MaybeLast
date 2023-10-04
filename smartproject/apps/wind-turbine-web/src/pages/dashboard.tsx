@@ -60,9 +60,9 @@ const getDataFuture = async (): Promise<IPredictFutureResponse[]> => {
 
 const getActivePowerAvgDataFuture = async (): Promise<number[]> => {
     try {
-        const data: IPredictFutureResponse = await getDataFuture();
-        if (data.status === 'success' && Array.isArray(data.predictions)) {
-            return data.predictions;
+        const data: IPredictFutureResponse[] = await getDataFuture();
+        if (data[0]?.status === 'success' && Array.isArray(data[0].predictions)) {
+            return data[0].predictions;
         } else {
             console.error("Failed to get ActivePowerAvg data: Invalid format");
             return [];
@@ -73,10 +73,12 @@ const getActivePowerAvgDataFuture = async (): Promise<number[]> => {
     }
 };
 
-function Dashboard(props) {
+
+
+function Dashboard() {
     const [activePowerAvgDataPast, setActivePowerAvgDataPast] = useState<number[] | null>(null);
     const [activePowerAvgDataFuture, setActivePowerAvgDataFuture] = useState<number[] | null>(null);
-    const [xAxisData, setXAxisData] = useState<number[] | null>(null);
+    const [xAxisData, setXAxisData] = useState<number[] | undefined>();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -85,11 +87,10 @@ function Dashboard(props) {
                 const activePowerDataFuture = await getActivePowerAvgDataFuture();
 
                 if (activePowerDataPast.length === 96 && activePowerDataFuture.length === 12) {
-                    const xAxis = Array.from({ length: 108 }, (_, index) => index + 1);
+                    setXAxisData(Array.from({ length: 108 }, (_, index) => index + 1));
 
                     setActivePowerAvgDataPast(activePowerDataPast);
                     setActivePowerAvgDataFuture(activePowerDataFuture);
-                    setXAxisData(xAxis);
                 }
             } catch (error) {
                 console.error("Error in fetchData: ", error);
@@ -137,13 +138,15 @@ function Dashboard(props) {
     const options = {
         scales: {
             x: {
-                type: 'category',
+                type: 'linear' as const,  // <-- "as const" asserts it to be a string literal type
             },
             y: {
-                type: 'linear',
+                type: 'linear' as const,
             },
         },
     };
+
+
 
     return (
         <Container maxWidth="md">

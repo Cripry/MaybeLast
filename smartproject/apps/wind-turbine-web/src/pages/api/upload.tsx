@@ -63,7 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 fs.writeFileSync(uploadPath, fileContent);
 
                 // Run Python script
-                exec(`python src/scripts/data_processor.py ${uploadPath}`, (error, stdout, stderr) => {
+                exec(`python3.9 src/scripts/data_processor.py ${uploadPath}`, (error, stdout, stderr) => {
                     if (error) {
                         console.error(`Python script execution error: ${error}`);
                         return res.status(500).json({ success: false, message: 'Python script failed' });
