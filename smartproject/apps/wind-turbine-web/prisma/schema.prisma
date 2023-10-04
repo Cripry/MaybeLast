@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TurbineData {
+  id                 Int   @id @default(autoincrement())
+  WindSpeedAvg       Float
+  RotorSpeedRpmAvg   Float
+  ActivePowerAvg     Float
+  NacellePositionAvg Float
+  Feature1           Float
+  Feature3           Float
+  Feature7           Float
+  Feature28          Float
+  DaySin             Float
+  DayCos             Float
+  YearSin            Float
+  YearCos            Float
+  HourSin            Float
+  HourCos            Float
+  MinuteSin          Float
+  MinuteCos          Float
+}
