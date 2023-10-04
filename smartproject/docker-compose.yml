@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  db2:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: myuser
+      POSTGRES_DB: mydb
+    networks:
+      - mynetwork
+
+  next-app2:
+    build:
+      context: .
+      dockerfile: apps/wind-turbine-web/Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - mynetwork
+    depends_on:
+      - db2
+
+  flask-app2:
+    build:
+      context: .
+      dockerfile: apps/flask_app/Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - mynetwork
+    depends_on:
+      - db2
+
+networks:
+  mynetwork:
+    driver: bridge

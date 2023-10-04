@@ -32,7 +32,7 @@ interface IPredictFutureResponse {
 }
 
 const getDataPast = async (take: number = 96): Promise<ITableData[]> => {
-    const res = await fetch(`http://localhost:3000/api/data?take=${take}`, {
+    const res = await fetch(`http://next-app2:3000/api/data?take=${take}`, {
         cache: "no-store",
     });
     if (!res.ok) {
@@ -47,7 +47,7 @@ const getActivePowerAvgDataPast = async (take: number = 96): Promise<number[]> =
 };
 
 const getDataFuture = async (): Promise<IPredictFutureResponse[]> => {
-    const res = await fetch(`http://127.0.0.1:5000/predict_future`, {
+    const res = await fetch(`http://flask-app2:5000/predict_future`, {
         cache: "no-store",
         mode: 'cors',
         method: 'GET',
