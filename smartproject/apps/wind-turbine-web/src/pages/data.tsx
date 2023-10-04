@@ -35,8 +35,8 @@ const getData = async (take: number = 10): Promise<ITableData[]> => {  // Defaul
   return res.json();
 }
 
-const About: React.FC = (props) => {
-  const [tableData, setTableData] = useState<ITableData[]>([]);
+const About: React.FC<{ initialData: ITableData[] }> = ({ initialData }) => {
+  const [tableData, setTableData] = useState<ITableData[]>(initialData);
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
@@ -149,3 +149,15 @@ const About: React.FC = (props) => {
 };
 
 export default About;
+
+
+
+export const getServerSideProps = async () => {
+  try {
+    const initialData = await getData();
+    return { props: { initialData } };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return { props: { initialData: [] } };  // Return empty array if there's an error
+  }
+};

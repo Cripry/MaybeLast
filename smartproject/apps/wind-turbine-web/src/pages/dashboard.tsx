@@ -75,9 +75,12 @@ const getActivePowerAvgDataFuture = async (): Promise<number[]> => {
 
 
 
-function Dashboard() {
-    const [activePowerAvgDataPast, setActivePowerAvgDataPast] = useState<number[] | null>(null);
-    const [activePowerAvgDataFuture, setActivePowerAvgDataFuture] = useState<number[] | null>(null);
+const Dashboard: React.FC<{
+    initialActivePowerDataPast: number[];
+    initialActivePowerDataFuture: number[];
+}> = ({ initialActivePowerDataPast, initialActivePowerDataFuture }) => {
+    const [activePowerAvgDataPast, setActivePowerAvgDataPast] = useState<number[] | null>(initialActivePowerDataPast);
+    const [activePowerAvgDataFuture, setActivePowerAvgDataFuture] = useState<number[] | null>(initialActivePowerDataFuture);
     const [xAxisData, setXAxisData] = useState<number[] | undefined>();
 
     useEffect(() => {
@@ -170,3 +173,26 @@ function Dashboard() {
 
 
 export default Dashboard;
+
+
+export const getServerSideProps = async () => {
+    try {
+        const initialActivePowerDataPast = await getActivePowerAvgDataPast();
+        const initialActivePowerDataFuture = await getActivePowerAvgDataFuture();
+
+        return {
+            props: {
+                initialActivePowerDataPast,
+                initialActivePowerDataFuture
+            }
+        };
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return {
+            props: {
+                initialActivePowerDataPast: [],
+                initialActivePowerDataFuture: []
+            }
+        };
+    }
+};
