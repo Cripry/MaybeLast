@@ -32,7 +32,7 @@ interface IPredictFutureResponse {
 }
 
 const getDataPast = async (take: number = 96): Promise<ITableData[]> => {
-    const res = await fetch(`http://next-app2:3000/api/data?take=${take}`, {
+    const res = await fetch(`http://localhost:3000/api/data?take=${take}`, {
         cache: "no-store",
     });
     if (!res.ok) {
@@ -46,8 +46,8 @@ const getActivePowerAvgDataPast = async (take: number = 96): Promise<number[]> =
     return tableData.map(data => data.ActivePowerAvg);
 };
 
-const getDataFuture = async (): Promise<IPredictFutureResponse[]> => {
-    const res = await fetch(`http://flask-app2:5000/predict_future`, {
+const getDataFuture = async (): Promise<IPredictFutureResponse> => {
+    const res = await fetch(`http://localhost:5000/predict_future`, {
         cache: "no-store",
         mode: 'cors',
         method: 'GET',
@@ -60,9 +60,9 @@ const getDataFuture = async (): Promise<IPredictFutureResponse[]> => {
 
 const getActivePowerAvgDataFuture = async (): Promise<number[]> => {
     try {
-        const data: IPredictFutureResponse[] = await getDataFuture();
-        if (data[0]?.status === 'success' && Array.isArray(data[0].predictions)) {
-            return data[0].predictions;
+        const data: IPredictFutureResponse = await getDataFuture();
+        if (data.status === 'success' && Array.isArray(data.predictions)) {
+            return data.predictions;
         } else {
             console.error("Failed to get ActivePowerAvg data: Invalid format");
             return [];
@@ -90,21 +90,18 @@ const Dashboard: React.FC<{
                 const activePowerDataFuture = await getActivePowerAvgDataFuture();
 
                 if (activePowerDataPast.length === 96 && activePowerDataFuture.length === 12) {
-                    setXAxisData(Array.from({ length: 108 }, (_, index) => index + 1));
-
+                    setXAxisData(prev => prev || Array.from({ length: 108 }, (_, index) => index + 1));
                     setActivePowerAvgDataPast(activePowerDataPast);
                     setActivePowerAvgDataFuture(activePowerDataFuture);
+                    console.log(activePowerAvgDataPast);
                 }
             } catch (error) {
                 console.error("Error in fetchData: ", error);
+                alert("Error fetching data. Please check the console for more details."); // User alert
             }
         };
 
-        const interval = setInterval(() => {
-            fetchData();
-        }, 500);
-
-        return () => clearInterval(interval);
+        fetchData();
     }, []);
 
     const computeFutureSum = () => {
@@ -114,7 +111,6 @@ const Dashboard: React.FC<{
     };
 
     const futureSum = computeFutureSum();
-
 
     const data = {
         labels: xAxisData,
@@ -128,8 +124,8 @@ const Dashboard: React.FC<{
             {
                 label: 'Active Power Avg for next 6 hours',
                 data: [
-                    ...(activePowerAvgDataPast || []).map(() => null), // fill with nulls based on the length of the past data
-                    ...(activePowerAvgDataFuture || []), // spread future data, or an empty array if null
+                    ...(activePowerAvgDataPast || []).map(() => null),
+                    ...(activePowerAvgDataFuture || []),
                 ],
                 fill: false,
                 borderColor: 'red',
@@ -141,7 +137,7 @@ const Dashboard: React.FC<{
     const options = {
         scales: {
             x: {
-                type: 'linear' as const,  // <-- "as const" asserts it to be a string literal type
+                type: 'linear' as const,
             },
             y: {
                 type: 'linear' as const,
@@ -149,21 +145,17 @@ const Dashboard: React.FC<{
         },
     };
 
-
-
     return (
         <Container maxWidth="md">
             <div >
                 <h1>Dashboard</h1>
-                {xAxisData && activePowerAvgDataPast && activePowerAvgDataFuture ? (
-                    <Line data={data} options={options} width={800} height={400} />
-                ) : (
-                    <p>Loading...</p>
-                )}
+
+                <Line data={data} options={options} width={800} height={400} />
+
             </div>
             <div style={{ marginLeft: '20px' }}>
                 <h2>Total Energy production in 6 hours</h2>
-                <p>{futureSum ? `${futureSum} kW` : 'Loading...'}</p>
+                <p>{futureSum} kW </p>
             </div>
         </Container>
     );

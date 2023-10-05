@@ -24,7 +24,7 @@ interface ITableData {
 }
 
 const getData = async (take: number = 10): Promise<ITableData[]> => {  // Default value is 10
-  const res = await fetch(`http://next-app2:3000/api/data?take=${take}`, { // Use template literal to include 'take'
+  const res = await fetch(`http://localhost:3000/api/data?take=${take}`, { // Use template literal to include 'take'
     cache: "no-store",
   });
 
