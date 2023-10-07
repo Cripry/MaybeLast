@@ -15,3 +15,7 @@ Clone the repository to your local machine:
 ```bash
 git clone https://github.com/Cripry/WindTurbineEnergy.git
 cd smartproject
+```
+
+To get the project up and running, execute the following command:
+`docker-compose up --build`
