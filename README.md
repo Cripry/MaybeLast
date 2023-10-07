@@ -50,7 +50,7 @@ The project contains several Jupyter notebooks documenting the model development
   
 ### Model Fine-tuning
 
-- In the `Fine Tuning` folder, various notebooks are available where different model architectures and hyperparameters were experimented with.
+- Inside the Fine Tuning folder, you'll find various notebooks where I experimented with different model architectures and tweaked hyperparameters.
 - The `Arch*` folders within the `Fine Tuning` directory contain results obtained after tuning.
 
 Feel free to explore these notebooks to understand the evolution of the model and the various approaches tried during the development process.
